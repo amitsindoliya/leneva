@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block content %}
+<main>
+    <div class="container">
+<h1>Your Cart Items!</h1>
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Item Name</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+        <th scope="col">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for orderitem in object.items.all %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ orderitem.item.title }}</td>
+        <td><a href="{% url 'leneva_backend:remove-from-quantity' orderitem.item.slug %}"><i class="fas fa-minus mr-2"></i></a>
+            {{ orderitem.quantity }}
+            <a href="{% url 'leneva_backend:add-to-quantity' orderitem.item.slug %}"><i class="fas fa-plus ml-2"></i></a>
+            </td>
+        {% if orderitem.item.discount_price %}
+        <td><del>{{ orderitem.item.price }}</del> ₹{{ orderitem.price }}<span class="badge badge-warning ml-2"> SAVINGS </span></td>
+        {% else %}
+        <td>₹{{ orderitem.price }}</td>
+        {% endif %} 
+        <td>₹{{ orderitem.total_item_price }}</td>
+        <td><a href="{% url 'leneva_backend:delete-item' orderitem.item.slug %}" type="submit"><i class="fas fa-trash"></i></a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">You don't have Any Item in your cart</td></tr>
+      {% endfor %}
+      {% if object.total_cart_price %}
+      <tr>
+        <th colspan="4">Total</th>
+        <td>₹{{ object.total_cart_price }}</td>
+      </tr>
+    {% endif %}
+    </tbody>
+  </table>
+  <a class="btn btn-default">Back Home</a>
+  <a class="btn btn-danger float-right" href="/checkout/">Place Order</a>
+  
+</div>
+</main>
+{% endblock content %}
